@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using Roommates.Models;
+using Roommates.Repositories;
+
 namespace Roommates
 {
     class Program
@@ -11,6 +14,9 @@ namespace Roommates
 
         static void Main(string[] args)
         {
+            RoomRepository roomRepo = new RoomRepository(CONNECTION_STRING);
+            ChoreRepository choreRepo = new ChoreRepository(CONNECTION_STRING);
+
             bool runProgram = true;
             while (runProgram)
             {
@@ -19,13 +25,75 @@ namespace Roommates
                 switch (selection)
                 {
                     case ("Show all rooms"):
-                        // Do stuff
+                        List<Room> rooms = roomRepo.GetAll();
+                        foreach (Room r in rooms)
+                        {
+                            Console.WriteLine($"{r.Name} has an Id of {r.Id} and a max occupancy of {r.MaxOccupancy}");
+                        }
+                        Console.Write("Press any key to continue");
+                        Console.ReadKey();
                         break;
-                    case ("Search for room"):
-                        // Do stuff
+                    case ("Search for a room"):
+                        Console.Write("Room Id: ");
+                        int roomId = int.Parse(Console.ReadLine());
+
+                        Room room = roomRepo.GetById(roomId);
+
+                        Console.WriteLine($"{room.Id} - {room.Name} Max Occupancy({room.MaxOccupancy})");
+                        Console.Write("Press any key to continue");
+                        Console.ReadKey();
                         break;
                     case ("Add a room"):
-                        // Do stuff
+                        Console.Write("Room name: ");
+                        string roomName = Console.ReadLine();
+
+                        Console.Write("Max occupancy: ");
+                        int max = int.Parse(Console.ReadLine());
+
+                        Room roomToAdd = new Room()
+                        {
+                            Name = roomName,
+                            MaxOccupancy = max
+                        };
+
+                        roomRepo.Insert(roomToAdd);
+
+                        Console.WriteLine($"{roomToAdd.Name} has been added and assigned an Id of {roomToAdd.Id}");
+                        Console.Write("Press any key to continue");
+                        Console.ReadKey();
+                        break;
+                    case ("Show all chores"):
+                        List<Chore> chores = choreRepo.GetAll();
+                        foreach (Chore c in chores)
+                        {
+                            Console.WriteLine($"{c.Name} has an Id of {c.Id}");
+                        }
+                        Console.Write("Press any key to continue");
+                        Console.ReadKey();
+                        break;
+                    case ("Search for a chore"):
+                        Console.Write("Chore Id: ");
+                        int choreId = int.Parse(Console.ReadLine());
+
+                        Chore chore = choreRepo.GetById(choreId);
+
+                        Console.WriteLine($"{chore.Id} - {chore.Name}");
+                        Console.Write("Press any key to continue");
+                        Console.ReadKey();
+                        break;
+                    case ("Add a chore"):
+                        Console.Write("Chore name: ");
+                        string choreName = Console.ReadLine();
+
+                        Chore choreToAdd = new Chore()
+                        {
+                            Name = choreName,
+                        };
+
+                        choreRepo.Insert(choreToAdd);
+                        Console.WriteLine($"{choreToAdd.Name} has been added and assigned an Id of {choreToAdd.Id}");
+                        Console.Write("Press any key to continue");
+                        Console.ReadKey();
                         break;
                     case ("Exit"):
                         runProgram = false;
@@ -42,8 +110,11 @@ namespace Roommates
             List<string> options = new List<string>()
             {
                 "Show all rooms",
-                "Search for room",
+                "Search for a room",
                 "Add a room",
+                "Show all chores",
+                "Search for a chore",
+                "Add a chore",
                 "Exit"
             };
 
