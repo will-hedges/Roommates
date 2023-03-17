@@ -77,7 +77,7 @@ namespace Roommates
                         Console.WriteLine("The following chores are unassigned:");
                         foreach (Chore uc in unassignedChores)
                         {
-                            Console.WriteLine($" - {uc.Name}");
+                            Console.WriteLine($" - {uc.Name} (Id = {uc.Id})");
                         }
                         Console.Write("Press any key to continue");
                         Console.ReadKey();
