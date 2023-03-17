@@ -104,10 +104,86 @@ namespace Roommates
                     case ("View unassigned chores"):
                         List<Chore> unassignedChores = choreRepo.GetUnnasignedChores();
                         Console.WriteLine("The following chores are unassigned:");
+                        int idx = 1;
                         foreach (Chore uc in unassignedChores)
                         {
-                            Console.WriteLine($" - {uc.Name}");
+                            Console.WriteLine($"{idx}. {uc.Name}");
+                            idx++;
                         }
+                        Console.Write("Press any key to continue");
+                        Console.ReadKey();
+                        break;
+
+                    case ("Assign chore to roommate"):
+                        // list unassigned chores
+                        List<Chore> unassignedChoreList = choreRepo.GetUnnasignedChores();
+                        Console.WriteLine("The following chores are unassigned:");
+                        idx = 1;
+                        foreach (Chore uc in unassignedChoreList)
+                        {
+                            Console.WriteLine($"{idx}. {uc.Name}");
+                            idx++;
+                        }
+
+                        // allow the user to select a chore
+                        Chore selectedChore;
+                        while (true)
+                        {
+                            try
+                            {
+                                Console.WriteLine();
+                                Console.Write("Select a chore > ");
+
+                                string input = Console.ReadLine();
+                                int index = int.Parse(input) - 1;
+                                selectedChore = unassignedChoreList[index];
+                                break;
+                            }
+                            catch (Exception)
+                            {
+
+                                continue;
+                            }
+                        }
+
+                        
+                        // list all roommates
+                        Console.WriteLine();
+                        Console.WriteLine("Roommates: ");
+                        Console.WriteLine();
+                        
+                        List<Roommate> roommates = roommateRepo.GetAll();
+                        idx = 1;
+                        foreach (Roommate r in roommates)
+                        {
+                            Console.WriteLine($"{idx}. {r.FirstName}");
+                            idx++;
+                        }
+
+                        // allow the user to select a roommate
+                        Roommate selectedRoommate;
+                        while (true)
+                        {
+                            try
+                            {
+                                Console.WriteLine();
+                                Console.Write($"Select a roommate to assign to '{selectedChore.Name}' > ");
+
+                                string input = Console.ReadLine();
+                                int index = int.Parse(input) - 1;
+                                selectedRoommate = roommates[index];
+                                break;
+                            }
+                            catch (Exception)
+                            {
+
+                                continue;
+                            }
+                        }
+
+                        // assign the chore in the db
+                        choreRepo.AssignChore(selectedRoommate.Id, selectedChore.Id);
+
                         Console.Write("Press any key to continue");
                         Console.ReadKey();
                         break;
@@ -167,6 +243,7 @@ namespace Roommates
                 "Update a room",
                 "Show all chores",
                 "View unassigned chores",
+                "Assign chore to roommate",
                 "Search for a chore",
                 "Add a chore",
                 "Search for a roommate",

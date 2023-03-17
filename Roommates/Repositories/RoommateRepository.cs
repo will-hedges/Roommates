@@ -1,4 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
+using System;
+using System.Collections.Generic;
 
 using Roommates.Models;
 
@@ -46,50 +48,38 @@ namespace Roommates.Repositories
                 }
             }
 
-        //public List<Roommate> GetAll()
-        //{
-        //    using (SqlConnection conn = Connection)
-        //    {
-        //        conn.Open();
-        //        using (SqlCommand cmd = conn.CreateCommand())
-        //        {
-        //            cmd.CommandText = @"SELECT 
-	       //                             rm.Id, 
-	       //                             rm.FirstName, 
-	       //                             rm.LastName, 
-	       //                             rm.RentPortion, 
-	       //                             rm.MoveInDate, 
-	       //                             rm.RoomId 
-        //                                FROM Roommate rm
-	       //                                 LEFT JOIN Room ro on rm.RoomId = ro.Id";
-                    
-        //            using (SqlDataReader reader = cmd.ExecuteReader())
-        //            {
-        //                List<Roommate> roommates = new List<Roommate>();
+        public List<Roommate> GetAll()
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "Select Id, FirstName FROM Roommate";
 
-        //                while (reader.Read())
-        //                {
-        //                    int idColumnPosition = reader.GetOrdinal("id");
-        //                    int idValue = reader.GetInt32(idColumnPosition);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        List<Roommate> roommates = new List<Roommate>();
 
-        //                    int firstNameColumnPosition = reader.GetOrdinal("FirstName");
-        //                    string firstNameValue = reader.GetString(firstNameColumnPosition);
+                        while (reader.Read())
+                        {
+                            int idColumnPosition = reader.GetOrdinal("Id");
+                            int idValue = reader.GetInt32(idColumnPosition);
 
-        //                    int lastNameColumnPosition = reader.GetOrdinal("LastName");
-        //                    string lastNameValue = reader.GetString(lastNameColumnPosition);
+                            int nameColumnPosition = reader.GetOrdinal("FirstName");
+                            string nameValue = reader.GetString(nameColumnPosition);
 
-        //                    int rentPortionColumnPosition = reader.GetOrdinal("RentPortion");
-        //                    int rentPortionValue = reader.GetInt32(rentPortionColumnPosition);
-
-        //                    int movedInDateColumnPosition = reader.GetOrdinal("MovedInDate");
-        //                    DateTime movedInDateValue = reader.GetDateTime(movedInDateColumnPosition);
-
-        //                    int roomColumnPosition = reader.GetOrdinal("Room");
-        //                    Room roomValue = reader.GetValue(roomColumnPosition);
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
+                            Roommate roommate = new Roommate
+                            {
+                                Id = idValue,
+                                FirstName = nameValue,
+                            };
+                            roommates.Add(roommate);
+                        }
+                        return roommates;
+                    }
+                }
+            }
+        }
     }
 }
